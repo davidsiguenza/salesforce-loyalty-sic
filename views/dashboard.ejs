@@ -1,0 +1,575 @@
+<%- include('partials/header', {currentPage: 'dashboard'}) %>
+
+<div class="mobile-dashboard">
+  <!-- Header del usuario -->
+  <div class="user-header">
+    <div class="user-avatar">
+      <%= member.name.split(' ').map(n => n.charAt(0).toUpperCase()).join('').substring(0, 2) %>
+    </div>
+    <div class="user-info">
+      <h2 class="user-name"><%= member.name %></h2>
+      <p class="user-email"><%= member.email %></p>
+    </div>
+  </div>
+
+  <!-- Stats principales -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-value"><%= member.points %></div>
+      <div class="stat-label">Puntos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= member.tier %></div>
+      <div class="stat-label">Nivel</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= member.achievements.length %></div>
+      <div class="stat-label">Logros</div>
+    </div>
+  </div>
+
+  <!-- Progreso al siguiente nivel -->
+  <% if (member.getNextTier()) { %>
+    <div class="progress-container">
+      <div class="progress-header">
+        <span>Camino a <%= member.getNextTier() %></span>
+        <span><%= member.points %>/<%= member.getPointsForNextTier() %></span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" data-width="<%= member.getProgressToNextTier() %>"></div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Navegación con tabs -->
+  <div class="tab-navigation">
+    <button class="tab-btn active" data-tab="achievements">
+      <i class="fas fa-trophy"></i>
+      <span>Logros</span>
+    </button>
+    <button class="tab-btn" data-tab="chat">
+      <i class="fas fa-comment-dots"></i>
+      <span>Agente</span>
+    </button>
+    <button class="tab-btn" data-tab="leaderboard">
+      <i class="fas fa-medal"></i>
+      <span>Ranking</span>
+    </button>
+  </div>
+
+  <!-- Contenido de las tabs -->
+  <div class="tab-content">
+    <!-- Tab de Logros -->
+    <div id="achievements-tab" class="tab-pane active">
+      <div class="achievements-container">
+        <div class="achievements-header">
+          <h3>Tus Logros</h3>
+          <div class="achievements-progress">
+            <span id="achievements-count"><%= member.achievements.length %>/10</span>
+          </div>
+        </div>
+        <div id="achievements-grid" class="achievements-grid">
+          <!-- Los logros se cargarán dinámicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab del Chat/Agente -->
+    <div id="chat-tab" class="tab-pane">
+      <div class="chat-container">
+        <div class="chat-header">
+          <h3>Asistente Personal</h3>
+          <div class="agent-status online">
+            <i class="fas fa-circle"></i>
+            <span>En línea</span>
+          </div>
+        </div>
+        
+        <!-- Información del miembro para el agente -->
+        <div class="member-summary">
+          <div class="summary-item">
+            <span class="label">Puntos:</span>
+            <span class="value" id="member-points"><%= member.points %></span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Nivel:</span>
+            <span class="value" id="member-tier"><%= member.tier %></span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Email:</span>
+            <span class="value"><%= member.email %></span>
+          </div>
+        </div>
+
+        <!-- Chat messages -->
+        <div class="chat-messages" id="chat-messages">
+          <div class="message agent-message">
+            <div class="message-content">
+              ¡Hola <%= member.name.split(' ')[0] %>! Soy tu asistente personal. ¿En qué puedo ayudarte hoy?
+            </div>
+            <div class="message-time">Ahora</div>
+          </div>
+        </div>
+
+        <!-- Chat input -->
+        <div class="chat-input-container">
+          <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." />
+          <button id="send-btn" class="send-btn">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+
+        <!-- Vouchers y Promociones -->
+        <div class="rewards-section">
+          <div class="vouchers-container">
+            <h4>Mis Vouchers</h4>
+            <div id="vouchers-list" class="vouchers-list">
+              <!-- Los vouchers se cargarán dinámicamente -->
+            </div>
+          </div>
+          
+          <div class="promotions-container">
+            <h4>Promociones Activas</h4>
+            <div id="promotions-list" class="promotions-list">
+              <!-- Las promociones se cargarán dinámicamente -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab del Leaderboard -->
+    <div id="leaderboard-tab" class="tab-pane">
+      <div class="leaderboard-container">
+        <div class="leaderboard-header">
+          <h3>Ranking de Engagement</h3>
+          <div class="my-score">
+            Tu Score: <span id="my-engagement-score"><%= member.getEngagementScore() %></span>
+          </div>
+        </div>
+        
+        <div class="score-breakdown">
+          <div class="score-item">
+            <span class="label">Logros:</span>
+            <span class="value"><%= member.achievements.length %>/10</span>
+          </div>
+          <div class="score-item">
+            <span class="label">Puntos:</span>
+            <span class="value"><%= member.points %></span>
+          </div>
+        </div>
+
+        <div id="leaderboard-list" class="leaderboard-list">
+          <!-- El leaderboard se cargará dinámicamente -->
+        </div>
+
+        <% if (!member.leaderboardSubmitted) { %>
+          <button id="submit-score-btn" class="submit-score-btn">
+            Enviar mi Puntuación
+          </button>
+        <% } else { %>
+          <div class="score-submitted">
+            <i class="fas fa-check-circle"></i>
+            Puntuación enviada
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification overlay -->
+<div id="notification" class="notification-overlay">
+  <div class="notification-content">
+    <div class="notification-title"></div>
+    <div class="notification-message"></div>
+  </div>
+</div>
+
+<script>
+// Variables globales
+const memberId = <%= member.id %>;
+let currentTab = 'achievements';
+
+// Inicializar la aplicación
+document.addEventListener('DOMContentLoaded', function() {
+  loadAchievements();
+  loadLeaderboard();
+  setupTabNavigation();
+  setupChatFunctionality();
+  setupProgressBars();
+  loadMemberRewards();
+});
+
+// Configurar navegación de tabs
+function setupTabNavigation() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanes = document.querySelectorAll('.tab-pane');
+  
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const targetTab = this.dataset.tab;
+      
+      // Actualizar botones activos
+      tabBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      
+      // Actualizar contenido activo
+      tabPanes.forEach(pane => pane.classList.remove('active'));
+      document.getElementById(targetTab + '-tab').classList.add('active');
+      
+      currentTab = targetTab;
+    });
+  });
+}
+
+// Configurar barras de progreso
+function setupProgressBars() {
+  const progressBars = document.querySelectorAll('[data-width]');
+  progressBars.forEach(bar => {
+    const width = bar.getAttribute('data-width');
+    if (width) {
+      setTimeout(() => {
+        bar.style.width = width + '%';
+      }, 300);
+    }
+  });
+}
+
+// Cargar logros
+async function loadAchievements() {
+  try {
+    const response = await fetch('/api/achievements');
+    const achievements = await response.json();
+    
+    const grid = document.getElementById('achievements-grid');
+    grid.innerHTML = '';
+    
+    achievements.forEach(achievement => {
+      const achievementEl = createAchievementElement(achievement);
+      grid.appendChild(achievementEl);
+    });
+  } catch (error) {
+    console.error('Error cargando logros:', error);
+  }
+}
+
+// Crear elemento de logro
+function createAchievementElement(achievement) {
+  const div = document.createElement('div');
+  div.className = `achievement-item ${achievement.unlocked ? 'unlocked' : 'locked'}`;
+  
+  div.innerHTML = `
+    <div class="achievement-icon">
+      <i class="fas fa-${achievement.icon || 'star'}"></i>
+    </div>
+    <div class="achievement-info">
+      <h4>${achievement.name}</h4>
+      <p>${achievement.description}</p>
+      ${achievement.unlocked ? '<span class="unlocked-badge">Desbloqueado</span>' : ''}
+    </div>
+  `;
+  
+  return div;
+}
+
+// Cargar leaderboard
+async function loadLeaderboard() {
+  try {
+    const response = await fetch('/api/leaderboard');
+    const leaderboard = await response.json();
+    
+    const list = document.getElementById('leaderboard-list');
+    list.innerHTML = '';
+    
+    leaderboard.forEach((member, index) => {
+      const memberEl = createLeaderboardElement(member, index + 1);
+      list.appendChild(memberEl);
+    });
+  } catch (error) {
+    console.error('Error cargando leaderboard:', error);
+  }
+}
+
+// Crear elemento del leaderboard
+function createLeaderboardElement(member, position) {
+  const div = document.createElement('div');
+  div.className = `leaderboard-item ${member.id === memberId ? 'current-user' : ''}`;
+  
+  div.innerHTML = `
+    <div class="position">${position}</div>
+    <div class="member-info">
+      <div class="member-name">${member.name}</div>
+      <div class="member-stats">${member.points} pts • ${member.achievements} logros</div>
+    </div>
+    <div class="score">${member.engagementScore}</div>
+  `;
+  
+  return div;
+}
+
+// Configurar funcionalidad del chat
+function setupChatFunctionality() {
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
+  const chatMessages = document.getElementById('chat-messages');
+  
+  function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+    
+    // Agregar mensaje del usuario
+    addMessage(message, 'user');
+    chatInput.value = '';
+    
+    // Simular respuesta del agente (aquí integrarías con Agentforce)
+    setTimeout(() => {
+      simulateAgentResponse(message);
+    }, 1000);
+  }
+  
+  sendBtn.addEventListener('click', sendMessage);
+  chatInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+}
+
+// Agregar mensaje al chat
+function addMessage(content, sender) {
+  const chatMessages = document.getElementById('chat-messages');
+  const messageEl = document.createElement('div');
+  messageEl.className = `message ${sender}-message`;
+  
+  messageEl.innerHTML = `
+    <div class="message-content">${content}</div>
+    <div class="message-time">${new Date().toLocaleTimeString()}</div>
+  `;
+  
+  chatMessages.appendChild(messageEl);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Simular respuesta del agente (temporal)
+function simulateAgentResponse(userMessage) {
+  const responses = [
+    "¡Genial! Te he agregado 50 puntos por tu participación.",
+    "He creado un voucher de descuento especial para ti.",
+    "¡Felicidades! Has desbloqueado un nuevo logro.",
+    "Te he enviado una promoción exclusiva."
+  ];
+  
+  const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+  addMessage(randomResponse, 'agent');
+  
+  // Simular acciones del agente
+  if (randomResponse.includes('puntos')) {
+    setTimeout(() => addPointsFromAgent(50), 500);
+  } else if (randomResponse.includes('voucher')) {
+    setTimeout(() => addVoucherFromAgent(), 500);
+  } else if (randomResponse.includes('promoción')) {
+    setTimeout(() => addPromotionFromAgent(), 500);
+  }
+}
+
+// Agregar puntos desde el agente
+async function addPointsFromAgent(points) {
+  try {
+    const response = await fetch('/api/points/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        amount: points,
+        reason: 'Puntos otorgados por el agente'
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      updateMemberStats(data.totalPoints, data.newTier);
+      showNotification('¡Puntos agregados!', `+${points} puntos`);
+    }
+  } catch (error) {
+    console.error('Error agregando puntos:', error);
+  }
+}
+
+// Agregar voucher desde el agente
+async function addVoucherFromAgent() {
+  try {
+    const response = await fetch('/api/vouchers/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: 'Descuento Especial',
+        description: '20% de descuento en tu próxima compra',
+        discount: 20,
+        code: `SPECIAL-${Date.now()}`
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      loadMemberRewards();
+      showNotification('¡Nuevo Voucher!', data.voucher.title);
+    }
+  } catch (error) {
+    console.error('Error agregando voucher:', error);
+  }
+}
+
+// Agregar promoción desde el agente
+async function addPromotionFromAgent() {
+  try {
+    const response = await fetch('/api/promotions/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: 'Promoción Exclusiva',
+        description: 'Envío gratis en pedidos superiores a 50€',
+        type: 'freeShipping',
+        value: 0
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      loadMemberRewards();
+      showNotification('¡Nueva Promoción!', data.promotion.title);
+    }
+  } catch (error) {
+    console.error('Error agregando promoción:', error);
+  }
+}
+
+// Cargar vouchers y promociones
+async function loadMemberRewards() {
+  try {
+    const response = await fetch('/api/member');
+    const memberData = await response.json();
+    
+    // Actualizar vouchers
+    const vouchersList = document.getElementById('vouchers-list');
+    vouchersList.innerHTML = '';
+    
+    if (memberData.vouchers.length === 0) {
+      vouchersList.innerHTML = '<p class="empty-state">No tienes vouchers disponibles</p>';
+    } else {
+      memberData.vouchers.forEach(voucher => {
+        const voucherEl = createVoucherElement(voucher);
+        vouchersList.appendChild(voucherEl);
+      });
+    }
+    
+    // Actualizar promociones
+    const promotionsList = document.getElementById('promotions-list');
+    promotionsList.innerHTML = '';
+    
+    if (memberData.promotions.length === 0) {
+      promotionsList.innerHTML = '<p class="empty-state">No tienes promociones activas</p>';
+    } else {
+      memberData.promotions.forEach(promotion => {
+        const promotionEl = createPromotionElement(promotion);
+        promotionsList.appendChild(promotionEl);
+      });
+    }
+  } catch (error) {
+    console.error('Error cargando recompensas:', error);
+  }
+}
+
+// Crear elemento de voucher
+function createVoucherElement(voucher) {
+  const div = document.createElement('div');
+  div.className = 'voucher-item';
+  
+  div.innerHTML = `
+    <div class="voucher-header">
+      <h5>${voucher.title}</h5>
+      <span class="voucher-discount">${voucher.discount}% OFF</span>
+    </div>
+    <p class="voucher-description">${voucher.description}</p>
+    <div class="voucher-code">Código: <strong>${voucher.code}</strong></div>
+    <div class="voucher-expires">Expira: ${new Date(voucher.expiresAt).toLocaleDateString()}</div>
+  `;
+  
+  return div;
+}
+
+// Crear elemento de promoción
+function createPromotionElement(promotion) {
+  const div = document.createElement('div');
+  div.className = 'promotion-item';
+  
+  div.innerHTML = `
+    <div class="promotion-header">
+      <h5>${promotion.title}</h5>
+      <span class="promotion-type">${promotion.type === 'freeShipping' ? 'Envío Gratis' : 'Descuento'}</span>
+    </div>
+    <p class="promotion-description">${promotion.description}</p>
+    <div class="promotion-expires">Válido hasta: ${new Date(promotion.validUntil).toLocaleDateString()}</div>
+  `;
+  
+  return div;
+}
+
+// Actualizar estadísticas del miembro
+function updateMemberStats(points, tier) {
+  document.getElementById('member-points').textContent = points;
+  document.getElementById('member-tier').textContent = tier;
+  
+  // Actualizar en el header también
+  const statValues = document.querySelectorAll('.stat-value');
+  if (statValues[0]) statValues[0].textContent = points;
+  if (statValues[1]) statValues[1].textContent = tier;
+}
+
+// Mostrar notificación
+function showNotification(title, message) {
+  const notification = document.getElementById('notification');
+  const titleEl = notification.querySelector('.notification-title');
+  const messageEl = notification.querySelector('.notification-message');
+  
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  
+  notification.classList.add('show');
+  
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
+}
+
+// Enviar puntuación al leaderboard
+document.getElementById('submit-score-btn')?.addEventListener('click', async function() {
+  try {
+    const response = await fetch('/api/leaderboard/submit', {
+      method: 'POST'
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      showNotification('¡Puntuación enviada!', `Score: ${data.score}`);
+      this.style.display = 'none';
+      
+      const submittedEl = document.createElement('div');
+      submittedEl.className = 'score-submitted';
+      submittedEl.innerHTML = '<i class="fas fa-check-circle"></i> Puntuación enviada';
+      this.parentNode.appendChild(submittedEl);
+      
+      loadLeaderboard();
+    }
+  } catch (error) {
+    console.error('Error enviando puntuación:', error);
+  }
+});
+</script>
+
+<%- include('partials/footer') %>

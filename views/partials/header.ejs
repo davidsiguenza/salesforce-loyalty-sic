@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= brand.fullName %> - Mobile Demo</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="<%= brand.images.favicon %>" type="image/x-icon">
+  
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/mobile.css">
+  
+  <!-- CSS Variables dinámicas para la marca -->
+  <style>
+    :root {
+      --primary-color: <%= brand.colors.primary %>;
+      --secondary-color: <%= brand.colors.secondary %>;
+      --accent-color: <%= brand.colors.accent %>;
+      --light-gray: <%= brand.colors.lightGray %>;
+      --mid-gray: <%= brand.colors.midGray %>;
+      --dark-gray: <%= brand.colors.darkGray %>;
+      --text-color: <%= brand.colors.textColor %>;
+      --text-light: <%= brand.colors.textLight %>;
+      --background-color: <%= brand.colors.backgroundColor %>;
+      --card-background: <%= brand.colors.cardBackground %>;
+      --border-color: <%= brand.colors.borderColor %>;
+      --success-color: <%= brand.colors.successColor %>;
+      --error-color: <%= brand.colors.errorColor %>;
+      --notification-color: <%= brand.colors.notificationColor %>;
+      
+      /* Colores de tier */
+      --bronze-color: <%= brand.colors.tierColors.bronze %>;
+      --silver-color: <%= brand.colors.tierColors.silver %>;
+      --gold-color: <%= brand.colors.tierColors.gold %>;
+      --platinum-color: <%= brand.colors.tierColors.platinum %>;
+    }
+  </style>
+  
+  <!-- Meta tags para PWA -->
+  <meta name="theme-color" content="<%= brand.colors.primary %>">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="<%= brand.name %>">
+</head>
+<body>
+  <% if (currentPage === 'dashboard') { %>
+    <!-- Para el dashboard no mostramos header tradicional -->
+  <% } else { %>
+    <!-- Header simple para otras páginas -->
+    <header class="simple-header">
+      <div class="header-content">
+        <a href="/" class="header-brand">
+          <img src="<%= brand.images.logo %>" alt="<%= brand.name %>" class="header-logo">
+          <span class="header-title"><%= brand.name %></span>
+        </a>
+        
+        <% if (typeof member !== 'undefined' && member && currentPage !== 'dashboard') { %>
+          <div class="header-user">
+            <div class="user-avatar-small">
+              <%= member.name.split(' ').map(n => n.charAt(0).toUpperCase()).join('').substring(0, 2) %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </header>
+  <% } %>
+
+<style>
+.simple-header {
+  background: white;
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.header-content {
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--primary-color);
+}
+
+.header-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar-small {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+</style>

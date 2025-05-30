@@ -1,0 +1,399 @@
+<%- include('partials/header', {currentPage: 'register'}) %>
+
+<div class="register-container">
+  <div class="register-header">
+    <img src="<%= brand.images.logo %>" alt="<%= brand.name %>" class="register-logo">
+    <h1><%= brand.fullName %></h1>
+    <p class="register-tagline"><%= brand.messages.tagline %></p>
+  </div>
+
+  <div class="register-card">
+    <% if (typeof message !== 'undefined' && message) { %>
+      <div class="alert alert-info">
+        <%= message %>
+      </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error">
+        <%= error %>
+      </div>
+    <% } %>
+    
+    <form method="POST" action="/register" class="register-form">
+      <div class="form-group">
+        <label for="name" class="form-label">Nombre completo</label>
+        <input 
+          type="text" 
+          class="form-input" 
+          id="name" 
+          name="name" 
+          required
+          placeholder="Ej: Juan Pérez"
+          value="<%= typeof formData !== 'undefined' ? formData.name : '' %>"
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <input 
+          type="email" 
+          class="form-input" 
+          id="email" 
+          name="email" 
+          required
+          placeholder="Ej: juan.perez@email.com"
+          value="<%= typeof formData !== 'undefined' ? formData.email : '' %>"
+        >
+        <small class="form-help">
+          Cada email solo puede registrarse una vez. Si ya tienes cuenta, utiliza un email diferente para probar la demo.
+        </small>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Intereses (opcional)</label>
+        <div class="preferences-grid">
+          <% brand.categories.forEach(category => { %>
+            <label class="preference-item">
+              <input type="checkbox" name="preferences" value="<%= category.id %>" id="<%= category.id %>">
+              <span class="preference-label"><%= category.label %></span>
+            </label>
+          <% }); %>
+        </div>
+      </div>
+      
+      <button type="submit" class="register-btn">
+        <i class="fas fa-user-plus"></i>
+        <%= brand.messages.joinClub %>
+      </button>
+    </form>
+    
+    <div class="benefits-section">
+      <h3>¿Por qué unirte?</h3>
+      <div class="benefits-grid">
+        <% brand.messages.features.forEach(feature => { %>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <i class="fas fa-<%= feature.title === 'Gana recompensas' ? 'gift' : feature.title === 'Consigue logros' ? 'trophy' : 'level-up-alt' %>"></i>
+            </div>
+            <div class="benefit-content">
+              <h4><%= feature.title %></h4>
+              <p><%= feature.description %></p>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+    
+    <div class="welcome-bonus">
+      <div class="bonus-icon">
+        <i class="fas fa-gift"></i>
+      </div>
+      <div class="bonus-content">
+        <h4>Regalo de Bienvenida</h4>
+        <div class="bonus-amount">250 €</div>
+        <p>Para comenzar tu experiencia</p>
+      </div>
+    </div>
+    
+    <div class="demo-notice">
+      <i class="fas fa-info-circle"></i>
+      <p><strong>Esta es una demo.</strong> Los datos se almacenan temporalmente y se borrarán tras la finalización de la misma.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.register-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.register-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.register-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 16px;
+}
+
+.register-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.register-tagline {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.register-card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  flex: 1;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.alert-info {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-left: 4px solid #2196f3;
+}
+
+.alert-error {
+  background: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #f44336;
+}
+
+.register-form {
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  background: white;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.form-help {
+  display: block;
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 6px;
+}
+
+.preferences-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preference-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--light-gray);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.preference-item:hover {
+  background: #e8f5e9;
+}
+
+.preference-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-color);
+}
+
+.preference-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.register-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.benefits-section {
+  margin-bottom: 24px;
+}
+
+.benefits-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.benefits-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--light-gray);
+  border-radius: 12px;
+}
+
+.benefit-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+}
+
+.benefit-content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-color);
+}
+
+.benefit-content p {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.welcome-bonus {
+  background: linear-gradient(135deg, #fff3e0, #f3e5f5);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 2px solid var(--secondary-color);
+}
+
+.bonus-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--secondary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+}
+
+.bonus-content {
+  flex: 1;
+}
+
+.bonus-content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text-color);
+}
+
+.bonus-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-bottom: 4px;
+}
+
+.bonus-content p {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.demo-notice {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.demo-notice i {
+  color: var(--primary-color);
+  font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 375px) {
+  .register-container {
+    padding: 16px;
+  }
+  
+  .register-card {
+    padding: 20px;
+  }
+  
+  .form-input {
+    padding: 12px 14px;
+  }
+  
+  .register-btn {
+    padding: 14px;
+  }
+}
+
+@media (min-width: 768px) {
+  .register-container {
+    max-width: 480px;
+    margin: 0 auto;
+    justify-content: center;
+  }
+}
+</style>
+
+<%- include('partials/footer') %>

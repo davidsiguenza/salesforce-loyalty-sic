@@ -1,0 +1,123 @@
+<% if (currentPage !== 'dashboard') { %>
+  <!-- Footer simple para páginas que no son dashboard -->
+  <footer class="simple-footer">
+    <div class="footer-content">
+      <div class="copyright">
+        &copy; <%= brand.copyright %>
+      </div>
+      
+      <% if (typeof session !== 'undefined' && session.memberId) { %>
+        <div class="footer-actions">
+          <form method="POST" action="/reset-account" onsubmit="return confirm('¿Seguro que deseas eliminar tu cuenta y reiniciar la demo?')" style="display: inline-block;">
+            <button type="submit" class="reset-btn">
+              <i class="fas fa-refresh"></i>
+              Reiniciar
+            </button>
+          </form>
+          
+          <form method="POST" action="/logout" style="display: inline-block;">
+            <button type="submit" class="logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+              Salir
+            </button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </footer>
+<% } %>
+
+<style>
+.simple-footer {
+  background: var(--light-gray);
+  padding: 20px;
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.copyright {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.footer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.reset-btn,
+.logout-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.reset-btn:hover {
+  background: var(--error-color);
+  color: white;
+  border-color: var(--error-color);
+}
+
+.logout-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+@media (max-width: 480px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-actions {
+    justify-content: center;
+  }
+}
+</style>
+
+<!-- Scripts de aplicación -->
+<script>
+// Auto-hide notifications after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+  const notifications = document.querySelectorAll('.notification-banner');
+  notifications.forEach(notification => {
+    setTimeout(() => {
+      notification.style.animation = 'slideUp 0.5s ease forwards';
+      setTimeout(() => {
+        notification.remove();
+      }, 500);
+    }, 5000);
+  });
+});
+
+// Service Worker para PWA (opcional)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').then(function(registration) {
+      console.log('SW registered: ', registration);
+    }).catch(function(registrationError) {
+      console.log('SW registration failed: ', registrationError);
+    });
+  });
+}
+</script>
+
+</body>
+</html>

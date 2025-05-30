@@ -1,0 +1,472 @@
+<%- include('partials/header', {currentPage: 'home'}) %>
+
+<div class="landing-container">
+  <div class="hero-section">
+    <div class="hero-content">
+      <img src="<%= brand.images.logo %>" alt="<%= brand.name %>" class="hero-logo">
+      <h1 class="hero-title"><%= brand.fullName %></h1>
+      <p class="hero-subtitle"><%= brand.messages.tagline %></p>
+      <p class="hero-description">Únete a nuestro programa de fidelización para disfrutar de recompensas exclusivas, desbloquear logros y alcanzar nuevos niveles.</p>
+      
+      <a href="/register" class="cta-button">
+        <i class="fas fa-user-plus"></i>
+        Comenzar Ahora
+      </a>
+    </div>
+  </div>
+
+  <div class="features-section">
+    <h2>¿Qué puedes hacer?</h2>
+    <div class="features-grid">
+      <% brand.messages.features.forEach(feature => { %>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-<%= feature.title === 'Gana recompensas' ? 'gift' : feature.title === 'Consigue logros' ? 'trophy' : 'level-up-alt' %>"></i>
+          </div>
+          <div class="feature-content">
+            <h3><%= feature.title %></h3>
+            <p><%= feature.description %></p>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <div class="benefits-section">
+    <h2><%= brand.messages.benefits.title %></h2>
+    <div class="benefits-list">
+      <% brand.messages.benefits.list.forEach(benefit => { %>
+        <div class="benefit-item">
+          <div class="benefit-check">
+            <i class="fas fa-check"></i>
+          </div>
+          <span><%= benefit %></span>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <div class="welcome-bonus-section">
+    <div class="bonus-card">
+      <div class="bonus-icon">
+        <i class="fas fa-gift"></i>
+      </div>
+      <div class="bonus-content">
+        <h3>Regalo de Bienvenida</h3>
+        <div class="bonus-amount">250 €</div>
+        <p>Al registrarte en nuestro programa</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <h2>¡Únete hoy!</h2>
+    <p>Es gratis y solo toma un minuto</p>
+    <a href="/register" class="cta-button secondary">
+      <i class="fas fa-arrow-right"></i>
+      Registrarse Gratis
+    </a>
+  </div>
+
+  <div class="demo-notice">
+    <i class="fas fa-info-circle"></i>
+    <p>Esta es una demostración interactiva de Salesforce Loyalty Management. Los datos son temporales y se reinician periódicamente.</p>
+  </div>
+</div>
+
+<% if (typeof message !== 'undefined' && message) { %>
+  <div class="notification-banner">
+    <i class="fas fa-check-circle"></i>
+    <span><%= message %></span>
+  </div>
+<% } %>
+
+<style>
+.landing-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--light-gray), #ffffff);
+}
+
+.hero-section {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: white;
+  padding: 60px 20px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('<%= brand.images.background %>') center/cover;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.hero-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.hero-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  margin-bottom: 16px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.hero-description {
+  font-size: 14px;
+  margin-bottom: 32px;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
+  background: var(--secondary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  text-decoration: none;
+  color: white;
+}
+
+.cta-button.secondary {
+  background: var(--primary-color);
+}
+
+.features-section {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.features-section h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  color: var(--primary-color);
+}
+
+.features-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.feature-content h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.feature-content p {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.4;
+}
+
+.benefits-section {
+  background: var(--light-gray);
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.benefits-section h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  color: var(--primary-color);
+}
+
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  text-align: left;
+}
+
+.benefit-check {
+  width: 32px;
+  height: 32px;
+  background: var(--secondary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.benefit-item span {
+  font-size: 14px;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.welcome-bonus-section {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.bonus-card {
+  background: linear-gradient(135deg, #fff3e0, #f3e5f5);
+  border: 2px solid var(--secondary-color);
+  border-radius: 20px;
+  padding: 32px 24px;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.bonus-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--secondary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 32px;
+}
+
+.bonus-content h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.bonus-amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-bottom: 8px;
+}
+
+.bonus-content p {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.cta-section {
+  background: white;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.cta-section h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--primary-color);
+}
+
+.cta-section p {
+  font-size: 16px;
+  color: var(--text-light);
+  margin-bottom: 32px;
+}
+
+.demo-notice {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.demo-notice i {
+  color: var(--primary-color);
+  font-size: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.notification-banner {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  background: var(--secondary-color);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  animation: slideDown 0.5s ease;
+}
+
+.notification-banner i {
+  font-size: 18px;
+}
+
+.notification-banner span {
+  font-size: 14px;
+  font-weight: 500;
+  flex: 1;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 375px) {
+  .hero-section {
+    padding: 40px 16px 60px;
+  }
+  
+  .hero-title {
+    font-size: 24px;
+  }
+  
+  .features-section,
+  .benefits-section,
+  .welcome-bonus-section,
+  .cta-section {
+    padding: 40px 16px;
+  }
+  
+  .cta-button {
+    padding: 14px 28px;
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  .landing-container {
+    max-width: 480px;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(0,0,0,0.1);
+  }
+  
+  .features-grid {
+    max-width: 450px;
+  }
+  
+  .benefits-list {
+    max-width: 450px;
+  }
+  
+  .bonus-card {
+    max-width: 450px;
+  }
+}
+
+/* Auto-hide notification */
+.notification-banner {
+  animation: slideDown 0.5s ease, slideUp 0.5s ease 4s forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+</style>
+
+<%- include('partials/footer') %>
